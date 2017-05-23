@@ -1,34 +1,74 @@
-﻿using System.IO;
-
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace EBay {
 	public class CreateCardDB {
-		public CreateCardDB(string[] files) {
+		public Set[] sets;
+		public Card[] all_cards;
+
+		public CreateCardDB(string[] files, string all_cards_file) {
+			sets = new Set[files.Length];
+			int i;
 			StreamReader r;
-			foreach(string file in files) {
-				r = new StreamReader(file);
-				string json = r.ReadToEnd();
-				Set s = new Set(JsonConvert.DeserializeObject<dynamic>(json));
+			string json;
+
+			for(i = 0; i < files.Length; i++) {
+				r = new StreamReader(files[i]);
+				json = r.ReadToEnd();
+				sets[i] = new Set(JsonConvert.DeserializeObject<dynamic>(json));
 			}
+
+			r = new StreamReader(all_cards_file);
+			json = r.ReadToEnd();
+			JObject all_cards_json = JsonConvert.DeserializeObject<dynamic>(json);
+			all_cards = new Card[all_cards_json.Count];
+			i = 0;
+			foreach(KeyValuePair<string, JToken> t in all_cards_json) {
+				all_cards[i] = new Card(t.Value);
+				i++;
+			}
+
+			int cards = 0;
+			foreach(Set s in sets) {
+				if(s.cards != null)
+					cards += s.cards.Length;
+			}
+			Console.WriteLine("Read all files!\n{0} sets were saved\n{1} cards were saved\n{2} unique cards were saved", sets.Length, cards, all_cards.Length);
 		}
 	}
 
 	public class Set {
+		// Standard set fields.
+		public string name;
+		public string code;
+		public string gathererCode;
+		public string oldCode;
+		public string magicCardsInfoCode;
+		public string releaseDate;
+		public string border;
+		public string type;
+		public string block;
+		public string onlineOnly;
+		public JArray booster;
+		public Card[] cards;
+
 		public Set(dynamic set_json) {
-			string name = set_json.name;
-			string code = set_json.code;
-			string gathererCode = set_json.gathererCode;
-			string magicCardsInfoCode = set_json.magicCardsInfoCode;
-			string releaseDate = set_json.releaseDate;
-			string border = set_json.border;
-			string type = set_json.type;
-			JArray booster = set_json.booster;
-			string mkm_name = set_json.mkm_name;
-			string mkm_id = set_json.mkm_id;
+			name = set_json.name;
+			code = set_json.code;
+			gathererCode = set_json.gathererCode;
+			oldCode = set_json.oldCode;
+			magicCardsInfoCode = set_json.magicCardsInfoCode;
+			releaseDate = set_json.releaseDate;
+			border = set_json.border;
+			type = set_json.type;
+			block = set_json.block;
+			onlineOnly = set_json.onlineOnly;
+			booster = set_json.booster;
 			JArray cards_jarray = set_json.cards;
-			Card[] cards = new Card[cards_jarray.Count];
+			cards = new Card[cards_jarray.Count];
 			for(int i = 0; i < cards_jarray.Count; i++) {
 				cards[i] = new Card(cards_jarray[i]);
 			}
@@ -36,6 +76,7 @@ namespace EBay {
 	}
 
 	public class Card {
+		// Standard card fields
 		public string id;
 		public string layout;
 		public string name;
@@ -68,7 +109,7 @@ namespace EBay {
 		public string releaseDate;
 		public string starter;
 		public string mciNumber;
-
+		// Extra fields
 		public JArray rulings;
 		public JArray foreignNames;
 		public JArray printings;

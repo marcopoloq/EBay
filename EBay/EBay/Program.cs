@@ -11,7 +11,7 @@ namespace EBay {
 			Stopwatch sw = new Stopwatch();
 			sw.Start();
 			mtgApiInterface = new CreateCardDB(
-				Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\all_sets"), "*.json"), // Folder with all sets
+				Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\AllSets-x.json"), // Json file with all sets
 				Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\AllCards-x.json")); // Json file with all cards
 			sw.Stop();
 			TimeSpan ts = sw.Elapsed;

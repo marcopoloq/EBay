@@ -161,7 +161,6 @@ namespace EBay {
 		private Tuple<DateTime, string>[] parseJArrayRulings(JToken token, string name) {
 			if(token.Value<JArray>(name) != null) {
 				JArray t = token.Value<JArray>(name);
-				JTokenType s = t[0].Type;
 				Tuple<DateTime, string>[] res = new Tuple<DateTime, string>[t.Count];
 				for(int i = 0; i < t.Count; i++) {
 					res[i] = Tuple.Create(parseDate(t[i], "date"), parseString(t[i], "text"));
@@ -174,7 +173,6 @@ namespace EBay {
 		private Tuple<string, string>[] parseJArrayLegalities(JToken token, string name) {
 			if(token.Value<JArray>(name) != null) {
 				JArray t = token.Value<JArray>(name);
-				JTokenType s = t[0].Type;
 				Tuple<string, string>[] res = new Tuple<string, string>[t.Count];
 				for(int i = 0; i < t.Count; i++) {
 					res[i] = Tuple.Create(parseString(t[i], "format"), parseString(t[i], "legality"));
@@ -196,11 +194,8 @@ public abstract class JSON_Parser {
 	}
 	// Function to parse string JTokens to DateTime
 	protected DateTime parseDate(JToken token, string name) {
-		if(token.Value<string>(name) != null) {
-			string[] res = parseString(token, name).Split('-');
-			return new DateTime(int.Parse(res[0]), int.Parse(res[1]), int.Parse(res[2]));
-		} else
-			return new DateTime();
+		string[] res = parseString(token, name).Split('-');
+		return new DateTime(int.Parse(res[0]), int.Parse(res[1]), int.Parse(res[2]));
 	}
 	// Function to parse JArray JTokens to string[]
 	protected string[] parseJArray(JToken token, string name) {

@@ -11,8 +11,8 @@ namespace EBay {
 		private static CreateCardDB mtgApiInterface;
 
 		static void Main(string[] args) {
-			dbh = new DBHandler();
-			//mtgApiInterface = new CreateCardDB(all_sets, all_cards);
+			mtgApiInterface = new CreateCardDB(all_sets, all_cards);
+			dbh = new DBHandler(mtgApiInterface);
 			Console.ReadKey();
 		}
 	}
